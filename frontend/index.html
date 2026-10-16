@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart AgriGuide | Farm Decision Dashboard</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Custom Tailwind Config for Theme Enhancements -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              dark: '#030712',
+              glass: 'rgba(15, 23, 42, 0.65)',
+              border: 'rgba(51, 65, 85, 0.5)',
+            }
+          },
+          animation: {
+            'blob': 'blob 15s infinite alternate',
+            'fade-in-up': 'fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+            'glow-pulse': 'glowPulse 3s infinite',
+          },
+          keyframes: {
+            blob: {
+              '0%': { transform: 'translate(0px, 0px) scale(1)' },
+              '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+              '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+              '100%': { transform: 'translate(0px, 0px) scale(1)' },
+            },
+            fadeInUp: {
+              '0%': { opacity: '0', transform: 'translateY(20px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            glowPulse: {
+              '0%, 100%': { opacity: '0.8', transform: 'scale(1)' },
+              '50%': { opacity: '0.4', transform: 'scale(1.05)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #030712;
+      overflow-x: hidden;
+    }
+    
+    /* Smooth Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #030712;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+
+    /* Premium Glassmorphism */
+    .glass-panel {
+      background: linear-gradient(145deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.6) 100%);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+    }
+
+    /* Card Hover Effects */
+    .interactive-card {
+      transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .interactive-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      border-radius: inherit;
+      padding: 2px;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.5), rgba(6, 182, 212, 0.5));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .interactive-card:hover {
+      transform: translateY(-5px);
+      background: linear-gradient(145deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
+      box-shadow: 0 20px 40px -10px rgba(16, 185, 129, 0.15), 0 0 20px rgba(16, 185, 129, 0.1) inset;
+    }
+
+    .interactive-card:hover::before {
+      opacity: 1;
+    }
+
+    /* Gradient Text */
+    .text-gradient {
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-image: linear-gradient(to right, #34d399, #22d3ee);
+    }
+
+    /* Staggered Delay Utilities */
+    .delay-100 { animation-delay: 100ms; }
+    .delay-200 { animation-delay: 200ms; }
+    .delay-300 { animation-delay: 300ms; }
+    .delay-400 { animation-delay: 400ms; }
+    .delay-500 { animation-delay: 500ms; }
+
+    /* Mobile Drawer Overlay */
+    .drawer-overlay {
+      transition: opacity 0.3s ease;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .drawer-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .drawer-menu {
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .drawer-menu.active {
+      transform: translateX(0);
+    }
+  </style>
+  <meta name="theme-color" content="#f2f6f1">
+  <meta name="description" content="Practical tools for crop planning, leaf health, irrigation, and market decisions.">
+  <link rel="stylesheet" href="professional.css">
+</head>
+<body class="text-slate-200 min-h-screen flex flex-col justify-between selection:bg-emerald-500/30 selection:text-emerald-100 relative">
+
+  <!-- Ambient Animated Background -->
+  <div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+    <div class="absolute top-[-10%] left-[-10%] w-[40vw] h-[40vw] rounded-full bg-emerald-600/10 blur-[100px] animate-blob mix-blend-screen"></div>
+    <div class="absolute top-[20%] right-[-10%] w-[35vw] h-[35vw] rounded-full bg-cyan-600/10 blur-[100px] animate-blob delay-2000 mix-blend-screen"></div>
+    <div class="absolute bottom-[-20%] left-[20%] w-[45vw] h-[45vw] rounded-full bg-indigo-600/10 blur-[120px] animate-blob delay-4000 mix-blend-screen"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 w-full glass-panel border-b-0 border-b border-white/5">
+    <div class="max-w-[1600px] mx-auto px-6 sm:px-8 lg:px-12 h-20 flex items-center justify-between">
+      
+      <!-- Logo Branding -->
+      <a aria-current="page" href="index.html" class="flex items-center gap-4 group">
+        <div class="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-cyan-500 p-[1px] shadow-lg shadow-emerald-500/20 group-hover:shadow-emerald-500/40 transition duration-300">
+          <div class="absolute inset-0 bg-emerald-400 blur-md opacity-20 group-hover:opacity-40 transition animate-glow-pulse"></div>
+          <div class="relative w-full h-full bg-slate-950 rounded-[15px] flex items-center justify-center text-emerald-400 group-hover:bg-slate-900 transition duration-300">
+            <i class="fa-solid fa-leaf text-xl"></i>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center gap-3">
+            <span class="text-lg font-extrabold tracking-tight text-white font-sans">Smart AgriGuide</span>
+            <span class="text-[10px] bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 px-2.5 py-1 rounded-full font-mono font-bold tracking-widest uppercase shadow-[0_0_10px_rgba(16,185,129,0.2)]">FARMER TOOLS</span>
+          </div>
+          <p class="text-[12px] text-slate-400 font-medium mt-0.5">Practical support for everyday farm decisions</p>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation Links -->
+      <nav class="hidden xl:flex items-center p-1.5 rounded-2xl bg-slate-950/50 border border-white/10 backdrop-blur-md shadow-inner">
+        <div class="relative">
+          <!-- Active Page Indicator Background -->
+          <div class="absolute inset-0 bg-white/10 rounded-xl shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] border border-white/5"></div>
+          <a aria-current="page" href="index.html" class="relative px-5 py-2.5 rounded-xl text-sm font-semibold text-white flex items-center gap-2.5 transition-all">
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <i class="fa-solid fa-chart-pie text-emerald-400"></i>
+            <span>Dashboard</span>
+          </a>
+        </div>
+        
+        <a href="crop.html" class="px-5 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-100 hover:bg-white/5 transition-all flex items-center gap-2.5">
+          <i class="fa-solid fa-seedling text-slate-500"></i>
+          <span>Crop Advisor</span>
+        </a>
+        <a href="disease.html" class="px-5 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-100 hover:bg-white/5 transition-all flex items-center gap-2.5">
+          <i class="fa-solid fa-microscope text-slate-500"></i>
+          <span>Leaf Pathology</span>
+        </a>
+        <a href="irrigation.html" class="px-5 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-100 hover:bg-white/5 transition-all flex items-center gap-2.5">
+          <i class="fa-solid fa-droplet text-slate-500"></i>
+          <span>Smart Irrigation</span>
+        </a>
+        <a href="market.html" class="px-5 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-100 hover:bg-white/5 transition-all flex items-center gap-2.5">
+          <i class="fa-solid fa-chart-line text-slate-500"></i>
+          <span>Market Strategy</span>
+        </a>
+        <a href="assistant.html" class="px-5 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-100 hover:bg-white/5 transition-all flex items-center gap-2.5">
+          <i class="fa-solid fa-microphone-lines text-slate-500"></i>
+          <span>Voice AI</span>
+        </a>
+      </nav>
+
+      <!-- System Status / Mobile Menu Toggle -->
+      <div class="flex items-center gap-4">
+        <div class="hidden sm:flex items-center gap-2.5 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+          <i class="fa-solid fa-server text-[10px]"></i>
+          <span class="font-mono font-semibold tracking-wide">System Connected</span>
+        </div>
+        
+        <!-- Mobile Toggle Button -->
+        <button onclick="toggleMobileNav()" aria-label="Toggle navigation menu" class="xl:hidden relative p-3 rounded-xl bg-white/5 border border-white/10 text-slate-300 hover:text-white hover:bg-white/10 transition focus:outline-none z-50">
+          <i class="fa-solid fa-bars-staggered"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer Overlay & Menu -->
+  <div id="drawerOverlay" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-40 drawer-overlay" onclick="toggleMobileNav()" aria-label="Toggle navigation menu"></div>
+  <div id="mobileDrawer" class="fixed top-0 right-0 h-full w-[300px] bg-slate-900 border-l border-white/10 z-50 drawer-menu shadow-2xl flex flex-col pt-24 px-6 pb-6">
+    <button onclick="toggleMobileNav()" aria-label="Toggle navigation menu" class="absolute top-6 right-6 p-2 text-slate-400 hover:text-white transition">
+      <i class="fa-solid fa-xmark text-2xl"></i>
+    </button>
+    <div class="space-y-2">
+      <a aria-current="page" href="index.html" class="flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-sm font-semibold text-white bg-white/10 border border-white/10 shadow-inner">
+        <i class="fa-solid fa-chart-pie text-emerald-400 w-5"></i> Dashboard
+      </a>
+      <a href="crop.html" class="flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 transition">
+        <i class="fa-solid fa-seedling text-slate-500 w-5"></i> Crop Advisor
+      </a>
+      <a href="disease.html" class="flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 transition">
+        <i class="fa-solid fa-microscope text-slate-500 w-5"></i> Leaf Pathology
+      </a>
+      <a href="irrigation.html" class="flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 transition">
+        <i class="fa-solid fa-droplet text-slate-500 w-5"></i> Smart Irrigation
+      </a>
+      <a href="market.html" class="flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 transition">
+        <i class="fa-solid fa-chart-line text-slate-500 w-5"></i> Market Intelligence
+      </a>
+      <a href="assistant.html" class="flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 transition">
+        <i class="fa-solid fa-microphone-lines text-slate-500 w-5"></i> Voice AI Assistant
+      </a>
+    </div>
+    <div class="mt-auto">
+      <div class="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-mono">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        System Online
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <main class="relative z-10 max-w-[1600px] mx-auto w-full px-6 sm:px-8 lg:px-12 py-10 space-y-12 flex-1">
+    
+    <!-- Hero / Status Banner -->
+    <div class="relative overflow-hidden rounded-[2.5rem] glass-panel p-8 sm:p-12 lg:p-14 opacity-0 animate-fade-in-up">
+      <!-- Decorative background gradients inside the card -->
+      <div class="absolute -right-32 -top-32 w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-[80px] pointer-events-none"></div>
+      <div class="absolute left-1/4 -bottom-32 w-[400px] h-[400px] bg-cyan-500/10 rounded-full blur-[80px] pointer-events-none"></div>
+
+      <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-12">
+        <div class="space-y-6 max-w-4xl">
+          <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 text-xs font-bold uppercase tracking-widest shadow-sm">
+            <i class="fa-solid fa-award"></i> Vel Tech University · Student project
+          </div>
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.15]">
+            <span class="text-gradient">Smart AgriGuide</span> for confident farm decisions
+          </h1>
+          <p class="text-slate-300 text-base sm:text-lg leading-relaxed max-w-3xl">
+            Plan crops, check leaf health, manage irrigation, and compare market options from one simple dashboard.
+          </p>
+          <div class="pt-4 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-slate-300 font-medium bg-white/5 inline-flex px-6 py-3 rounded-2xl border border-white/10 backdrop-blur-md">
+            <span class="flex items-center gap-2"><i class="fa-solid fa-user text-emerald-400"></i> Bellamkonda Praveen</span>
+            <span class="hidden sm:block text-slate-600">|</span>
+            <span class="flex items-center gap-2"><i class="fa-solid fa-user text-cyan-400"></i> Puchanuthala Arun Kumar</span>
+            <div class="w-full sm:w-auto h-[1px] sm:h-4 sm:w-[1px] bg-white/10 my-2 sm:my-0"></div>
+            <span class="flex items-center gap-2 text-slate-400 text-xs"><i class="fa-solid fa-building-columns"></i> Vel Tech Rangarajan Dr. Sagunthala R&D Institute</span>
+          </div>
+        </div>
+
+        <!-- System KPI Chips Grid -->
+        <div class="grid grid-cols-2 gap-4 lg:min-w-[420px]">
+          <div class="bg-slate-900/60 backdrop-blur-md border border-white/10 rounded-2xl p-5 shadow-inner hover:border-emerald-500/40 transition duration-300 group opacity-0 animate-fade-in-up delay-100">
+            <div class="flex items-center gap-2 mb-2">
+              <i class="fa-solid fa-microchip text-emerald-500/70"></i>
+              <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Crop Classifier</div>
+            </div>
+            <div class="text-3xl font-black text-emerald-400 font-mono group-hover:scale-105 transition transform origin-left">98.64%</div>
+            <div class="text-[11px] text-slate-500 mt-1 font-medium">Random Forest CV</div>
+          </div>
+          <div class="bg-slate-900/60 backdrop-blur-md border border-white/10 rounded-2xl p-5 shadow-inner hover:border-cyan-500/40 transition duration-300 group opacity-0 animate-fade-in-up delay-200">
+            <div class="flex items-center gap-2 mb-2">
+              <i class="fa-solid fa-bolt text-cyan-500/70"></i>
+              <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Vision Latency</div>
+            </div>
+            <div class="text-3xl font-black text-cyan-400 font-mono group-hover:scale-105 transition transform origin-left">22.4 ms</div>
+            <div class="text-[11px] text-slate-500 mt-1 font-medium">CPU Single-Thread</div>
+          </div>
+          <div class="bg-slate-900/60 backdrop-blur-md border border-white/10 rounded-2xl p-5 shadow-inner hover:border-blue-500/40 transition duration-300 group opacity-0 animate-fade-in-up delay-300">
+            <div class="flex items-center gap-2 mb-2">
+              <i class="fa-solid fa-water text-blue-500/70"></i>
+              <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Water Saved</div>
+            </div>
+            <div class="text-3xl font-black text-blue-400 font-mono group-hover:scale-105 transition transform origin-left">41.36%</div>
+            <div class="text-[11px] text-slate-500 mt-1 font-medium">Preemptive Suppression</div>
+          </div>
+          <div class="bg-slate-900/60 backdrop-blur-md border border-white/10 rounded-2xl p-5 shadow-inner hover:border-amber-500/40 transition duration-300 group opacity-0 animate-fade-in-up delay-400">
+            <div class="flex items-center gap-2 mb-2">
+              <i class="fa-solid fa-money-trend-up text-amber-500/70"></i>
+              <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Market Coverage</div>
+            </div>
+            <div class="text-3xl font-black text-amber-400 font-mono group-hover:scale-105 transition transform origin-left">2025/26</div>
+            <div class="text-[11px] text-slate-500 mt-1 font-medium">YoY APMC Benchmark</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 Core Farmer Modules Grid -->
+    <div class="w-full">
+      <div class="flex items-center gap-4 mb-8 opacity-0 animate-fade-in-up delay-200">
+        <h2 class="text-2xl font-bold text-white">Tools for your farm</h2>
+        <div class="h-[1px] flex-1 bg-gradient-to-r from-white/10 to-transparent"></div>
+      </div>
+      
+      <!-- Top Row: 3 Modules -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 w-full mb-6 lg:mb-8">
+
+        <!-- Module 1: Crop Advisor -->
+        <a href="crop.html" class="glass-panel interactive-card rounded-[2rem] p-8 flex flex-col justify-between group opacity-0 animate-fade-in-up delay-300">
+          <div>
+            <div class="flex items-start justify-between mb-6">
+              <div class="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 text-2xl shadow-[0_0_15px_rgba(16,185,129,0.15)] group-hover:bg-emerald-500 group-hover:text-slate-900 group-hover:shadow-[0_0_25px_rgba(16,185,129,0.4)] transition-all duration-300">
+                <i class="fa-solid fa-seedling"></i>
+              </div>
+              <span class="px-3 py-1 rounded-full text-[10px] font-bold tracking-widest bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono uppercase">Module 01</span>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-3 flex items-center justify-between">
+              Crop suitability
+            </h3>
+            <p class="text-sm text-slate-400 leading-relaxed font-medium">
+              Enter your soil and local weather details to see which crops may suit your field.
+            </p>
+          </div>
+          <div class="mt-8 pt-5 border-t border-white/10 flex items-center justify-between text-sm">
+            <span class="text-slate-500">Validation: <strong class="text-emerald-300 font-mono ml-1">98.64%</strong></span>
+            <span class="text-white font-semibold group-hover:text-emerald-400 flex items-center gap-2 transition-colors">
+              Open tool <i class="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+            </span>
+          </div>
+        </a>
+
+        <!-- Module 2: Leaf Pathology -->
+        <a href="disease.html" class="glass-panel interactive-card rounded-[2rem] p-8 flex flex-col justify-between group opacity-0 animate-fade-in-up delay-400">
+          <div>
+            <div class="flex items-start justify-between mb-6">
+              <div class="w-14 h-14 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 text-2xl shadow-[0_0_15px_rgba(6,182,212,0.15)] group-hover:bg-cyan-500 group-hover:text-slate-900 group-hover:shadow-[0_0_25px_rgba(6,182,212,0.4)] transition-all duration-300">
+                <i class="fa-solid fa-microscope"></i>
+              </div>
+              <span class="px-3 py-1 rounded-full text-[10px] font-bold tracking-widest bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-mono uppercase">Module 02</span>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-3">
+              Leaf health check
+            </h3>
+            <p class="text-sm text-slate-400 leading-relaxed font-medium">
+              Upload a clear leaf photo to check for common disease symptoms and review suggested next steps.
+            </p>
+          </div>
+          <div class="mt-8 pt-5 border-t border-white/10 flex items-center justify-between text-sm">
+            <span class="text-slate-500">Inference: <strong class="text-cyan-300 font-mono ml-1">22.4 ms</strong></span>
+            <span class="text-white font-semibold group-hover:text-cyan-400 flex items-center gap-2 transition-colors">
+              Open tool <i class="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+            </span>
+          </div>
+        </a>
+
+        <!-- Module 3: Smart Irrigation -->
+        <a href="irrigation.html" class="glass-panel interactive-card rounded-[2rem] p-8 flex flex-col justify-between group opacity-0 animate-fade-in-up delay-500">
+          <div>
+            <div class="flex items-start justify-between mb-6">
+              <div class="w-14 h-14 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 text-2xl shadow-[0_0_15px_rgba(59,130,246,0.15)] group-hover:bg-blue-500 group-hover:text-slate-900 group-hover:shadow-[0_0_25px_rgba(59,130,246,0.4)] transition-all duration-300">
+                <i class="fa-solid fa-droplet"></i>
+              </div>
+              <span class="px-3 py-1 rounded-full text-[10px] font-bold tracking-widest bg-blue-500/10 text-blue-400 border border-blue-500/20 font-mono uppercase">Module 03</span>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-3">
+              Smart irrigation advice
+            </h3>
+            <p class="text-sm text-slate-400 leading-relaxed font-medium">
+              Use soil moisture and the weather forecast to plan when and how much to water.
+            </p>
+          </div>
+          <div class="mt-8 pt-5 border-t border-white/10 flex items-center justify-between text-sm">
+            <span class="text-slate-500">Water Efficiency: <strong class="text-blue-300 font-mono ml-1">41.36%</strong></span>
+            <span class="text-white font-semibold group-hover:text-blue-400 flex items-center gap-2 transition-colors">
+              Open tool <i class="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+            </span>
+          </div>
+        </a>
+
+      </div>
+
+      <!-- Bottom Row: 2 Wider Modules -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 w-full">
+
+        <!-- Module 4: Market Strategy -->
+        <a href="market.html" class="glass-panel interactive-card rounded-[2rem] p-8 flex flex-col justify-between group opacity-0 animate-fade-in-up delay-[600ms]">
+          <div>
+            <div class="flex items-start justify-between mb-6">
+              <div class="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 text-2xl shadow-[0_0_15px_rgba(245,158,11,0.15)] group-hover:bg-amber-500 group-hover:text-slate-900 group-hover:shadow-[0_0_25px_rgba(245,158,11,0.4)] transition-all duration-300">
+                <i class="fa-solid fa-chart-line"></i>
+              </div>
+              <span class="px-3 py-1 rounded-full text-[10px] font-bold tracking-widest bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono uppercase">Module 04</span>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-3">
+              Market insights
+            </h3>
+            <p class="text-sm text-slate-400 leading-relaxed font-medium">
+              Compare crop prices, travel costs, and estimated payouts across available buyer options.
+            </p>
+          </div>
+          <div class="mt-8 pt-5 border-t border-white/10 flex items-center justify-between text-sm">
+            <span class="text-slate-500">YoY Metrics: <strong class="text-amber-300 font-mono ml-1">Active</strong></span>
+            <span class="text-white font-semibold group-hover:text-amber-400 flex items-center gap-2 transition-colors">
+              Open tool <i class="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+            </span>
+          </div>
+        </a>
+
+        <!-- Module 5: Voice Assistant -->
+        <a href="assistant.html" class="glass-panel interactive-card rounded-[2rem] p-8 flex flex-col justify-between group opacity-0 animate-fade-in-up delay-[700ms]">
+          <div>
+            <div class="flex items-start justify-between mb-6">
+              <div class="w-14 h-14 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 text-2xl shadow-[0_0_15px_rgba(168,85,247,0.15)] group-hover:bg-purple-500 group-hover:text-slate-900 group-hover:shadow-[0_0_25px_rgba(168,85,247,0.4)] transition-all duration-300">
+                <i class="fa-solid fa-microphone-lines"></i>
+              </div>
+              <span class="px-3 py-1 rounded-full text-[10px] font-bold tracking-widest bg-purple-500/10 text-purple-400 border border-purple-500/20 font-mono uppercase">Module 05</span>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-3">
+              Voice and chat support
+            </h3>
+            <p class="text-sm text-slate-400 leading-relaxed font-medium">
+              Ask a farming question in Telugu, Hindi, Tamil, or English and get a reply by text or voice.
+            </p>
+          </div>
+          <div class="mt-8 pt-5 border-t border-white/10 flex items-center justify-between text-sm">
+            <span class="text-slate-500">Languages: <strong class="text-purple-300 font-mono ml-1">TE / HI / TA / EN</strong></span>
+            <span class="text-white font-semibold group-hover:text-purple-400 flex items-center gap-2 transition-colors">
+              Open tool <i class="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+            </span>
+          </div>
+        </a>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Premium Footer -->
+  <footer class="relative z-10 border-t border-white/5 bg-slate-950/40 backdrop-blur-xl mt-12 w-full">
+    <div class="max-w-[1600px] mx-auto py-8 px-6 sm:px-8 lg:px-12 w-full">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+        
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center border border-white/10 text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.1)]">
+            <i class="fa-solid fa-leaf text-sm"></i>
+          </div>
+          <p class="text-xs text-slate-400">
+            Smart AgriGuide © 2026 — Built by <strong class="text-slate-300">Bellamkonda Praveen</strong> & <strong class="text-slate-300">Puchanuthala Arun Kumar</strong>
+          </p>
+        </div>
+
+        <div class="flex items-center gap-4 bg-white/5 px-4 py-2 rounded-full border border-white/10">
+          <i class="fa-solid fa-building-columns text-slate-500 text-xs"></i>
+          <span class="text-[11px] font-mono text-slate-300">Vel Tech Rangarajan Dr. Sagunthala R&D Institute of Science and Technology</span>
+        </div>
+        
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Logic for sleek mobile drawer
+    function toggleMobileNav() {
+      const overlay = document.getElementById('drawerOverlay');
+      const drawer = document.getElementById('mobileDrawer');
+      
+      overlay.classList.toggle('active');
+      drawer.classList.toggle('active');
+      
+      // Prevent body scrolling when menu is open
+      if (drawer.classList.contains('active')) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = '';
+      }
+    }
+  </script>
+
+</body>
+</html>

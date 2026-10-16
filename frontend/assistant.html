@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart AgriGuide | Voice and Chat Support</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #030712;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(168, 85, 247, 0.08) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.06) 0px, transparent 50%);
+      background-attachment: fixed;
+    }
+    code, .font-mono { font-family: 'JetBrains Mono', monospace; }
+    
+    .glass-card {
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.75) 0%, rgba(10, 15, 30, 0.5) 100%);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(51, 65, 85, 0.4);
+    }
+  </style>
+  <meta name="theme-color" content="#f2f6f1">
+  <meta name="description" content="Ask farming questions by voice or text in Telugu, Hindi, Tamil, or English.">
+  <link rel="stylesheet" href="professional.css">
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col justify-between selection:bg-purple-500 selection:text-slate-950">
+
+  <!-- 100% Full-Width Header -->
+  <header class="sticky top-0 z-50 w-full border-b border-slate-800/80 bg-slate-950/85 backdrop-blur-2xl">
+    <div class="w-full px-6 sm:px-8 lg:px-12 h-16 flex items-center justify-between">
+      
+      <!-- Logo Branding -->
+      <a href="index.html" class="flex items-center gap-3.5 group">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 via-emerald-500 to-teal-400 p-[1.5px] shadow-lg shadow-emerald-500/20 group-hover:shadow-emerald-500/40 transition">
+          <div class="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center text-emerald-400 group-hover:bg-slate-900 transition">
+            <i class="fa-solid fa-leaf text-base"></i>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center gap-2.5">
+            <span class="text-base font-extrabold tracking-tight text-white font-display">Smart AgriGuide</span>
+            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-mono font-bold tracking-wide">FARMER TOOLS</span>
+          </div>
+          <p class="text-[11px] text-slate-400 font-medium">Practical support for everyday farm decisions</p>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation Links -->
+      <nav class="hidden xl:flex items-center gap-1.5 p-1 rounded-2xl bg-slate-900/70 border border-slate-800/90 backdrop-blur-md">
+        <a href="index.html" class="px-4 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-slate-100 hover:bg-slate-800/50 transition-all flex items-center gap-2">
+          <i class="fa-solid fa-chart-pie text-slate-500"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="crop.html" class="px-4 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-slate-100 hover:bg-slate-800/50 transition-all flex items-center gap-2">
+          <i class="fa-solid fa-seedling text-slate-500"></i>
+          <span>Crop Advisor</span>
+        </a>
+        <a href="disease.html" class="px-4 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-slate-100 hover:bg-slate-800/50 transition-all flex items-center gap-2">
+          <i class="fa-solid fa-microscope text-slate-500"></i>
+          <span>Leaf Pathology</span>
+        </a>
+        <a href="irrigation.html" class="px-4 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-slate-100 hover:bg-slate-800/50 transition-all flex items-center gap-2">
+          <i class="fa-solid fa-droplet text-slate-500"></i>
+          <span>Smart Irrigation</span>
+        </a>
+        <a href="market.html" class="px-4 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-slate-100 hover:bg-slate-800/50 transition-all flex items-center gap-2">
+          <i class="fa-solid fa-chart-line text-slate-500"></i>
+          <span>Market Intelligence</span>
+        </a>
+        <a aria-current="page" href="assistant.html" class="relative px-4 py-2 rounded-xl text-xs font-semibold text-white bg-slate-800/90 border border-slate-700/80 shadow-sm flex items-center gap-2 transition-all">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          <i class="fa-solid fa-microphone-lines text-emerald-400"></i>
+          <span>Voice AI Assistant</span>
+        </a>
+      </nav>
+
+      <!-- System Status / Mobile Menu Toggle -->
+      <div class="flex items-center gap-3">
+        <div class="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 text-xs font-medium shadow-inner">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </span>
+          <span class="text-[11px] font-mono font-semibold tracking-wide">System Connected</span>
+        </div>
+        
+        <button onclick="toggleMobileNav()" aria-label="Toggle navigation menu" class="xl:hidden p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white focus:outline-none">
+          <i class="fa-solid fa-bars-staggered text-sm"></i>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Mobile Drawer Menu -->
+    <div id="mobileNavDrawer" class="hidden xl:hidden border-t border-slate-800 bg-slate-950/95 px-6 py-4 space-y-2">
+      <a href="index.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white"><i class="fa-solid fa-chart-pie text-slate-500"></i> Dashboard</a>
+      <a href="crop.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white"><i class="fa-solid fa-seedling text-slate-500"></i> Crop Advisor</a>
+      <a href="disease.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white"><i class="fa-solid fa-microscope text-slate-500"></i> Leaf Pathology</a>
+      <a href="irrigation.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white"><i class="fa-solid fa-droplet text-slate-500"></i> Smart Irrigation</a>
+      <a href="market.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-white"><i class="fa-solid fa-chart-line text-slate-500"></i> Market Intelligence</a>
+      <a aria-current="page" href="assistant.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-white bg-slate-900 border border-slate-800"><i class="fa-solid fa-microphone-lines text-emerald-400"></i> Voice AI Assistant</a>
+    </div>
+  </header>
+
+  <main class="w-full px-6 sm:px-8 lg:px-12 py-8 flex-1">
+    
+    <!-- Breadcrumb & Header Title -->
+    <div class="mb-6">
+      <div class="flex items-center gap-2 text-xs text-slate-400 font-mono mb-1">
+        <a href="index.html" class="hover:text-purple-400 transition">AgriGuide</a>
+        <span>/</span>
+        <span class="text-purple-400 font-bold">Module 05</span>
+      </div>
+      <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight flex items-center gap-3">
+        <span class="w-8 h-8 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 text-base">
+          <i class="fa-solid fa-microphone-lines"></i>
+        </span>
+        Talk with AgriGuide
+      </h2>
+    </div>
+
+    <!-- Main Assistant Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 w-full">
+      
+      <!-- Left Column: Microphone Control & Regional Language Selector -->
+      <div class="glass-card rounded-3xl p-6 sm:p-8 lg:p-10 shadow-xl flex flex-col justify-between space-y-6">
+        <div>
+          <div class="border-b border-slate-800/80 pb-4 mb-5">
+            <span class="text-xs font-semibold uppercase tracking-wider text-purple-400 font-mono">Voice support in Telugu, Hindi, Tamil, and English</span>
+            <p class="text-xs text-slate-400 mt-1">తెలుగులో మాట్లాడితే తెలుగులోనే సమాధానం వస్తుంది. बोलें और अपनी ही भाषा में जवाब सुनें।</p>
+          </div>
+
+          <!-- Language Selector -->
+          <div class="mb-5 bg-slate-950/80 p-4 rounded-2xl border border-slate-800/80">
+            <label class="text-xs text-slate-300 font-semibold block mb-2 flex items-center justify-between">
+              <span>Speaking Language</span>
+              <span id="activeLangBadge" class="text-[10px] text-purple-400 uppercase font-mono px-2 py-0.5 rounded bg-purple-500/10 border border-purple-500/20 font-bold">TE-IN (తెలుగు)</span>
+            </label>
+            <select id="voice_lang_select" onchange="updateSelectedLanguage()" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-purple-500 font-medium">
+              <option value="te-IN" selected>Telugu (తెలుగు) - మాట్లాడు / విను</option>
+              <option value="hi-IN">Hindi (हिन्दी) - बोलें / सुनें</option>
+              <option value="ta-IN">Tamil (தமிழ்) - பேசு / கேள்</option>
+              <option value="en-US">English (Indian / Global)</option>
+            </select>
+          </div>
+
+          <!-- Animated Mic Button Area -->
+          <div class="p-8 text-center bg-slate-950/80 border border-slate-800 rounded-3xl flex flex-col items-center justify-center relative overflow-hidden shadow-inner">
+            <div id="micPulseRing" class="hidden absolute w-32 h-32 rounded-full bg-purple-500/20 animate-ping"></div>
+            
+            <button id="micButton" onclick="toggleVoiceRecording()" class="relative z-10 w-22 h-22 sm:w-24 sm:h-24 rounded-full bg-purple-500 hover:bg-purple-400 active:scale-95 text-slate-950 text-3xl flex items-center justify-center shadow-2xl shadow-purple-500/30 transition-all">
+              <i id="micIcon" class="fa-solid fa-microphone"></i>
+            </button>
+            <span id="micStatusText" class="mt-4 text-xs font-bold text-slate-200">మైక్‌పై నొక్కి మాట్లాడండి (Tap & Speak)</span>
+            <span id="micTranscriptPreview" class="text-[11px] text-purple-400 italic mt-1.5 min-h-[1.2rem] px-2"></span>
+          </div>
+
+          <!-- Quick Prompts -->
+          <div class="mt-6">
+            <span class="text-[11px] uppercase font-bold text-slate-400 tracking-wider block mb-2.5 font-mono">Suggested questions</span>
+            <div class="space-y-2">
+              <button onclick="sendQuickChat('వరి పంట మార్కెట్ రేటు ఎంత? అమ్మాలా వద్దా?')" class="w-full text-left text-xs bg-slate-950/80 hover:bg-slate-800/80 p-3 rounded-xl border border-slate-800/80 text-emerald-300 transition">
+                🌾 "వరి పంట మార్కెట్ రేటు ఎంత? అమ్మాలా వద్దా?"
+              </button>
+              <button onclick="sendQuickChat('టమాట పంట మార్కెట్ రేటు మరియు ఎరువుల వివరాలు చెప్పండి')" class="w-full text-left text-xs bg-slate-950/80 hover:bg-slate-800/80 p-3 rounded-xl border border-slate-800/80 text-cyan-300 transition">
+                🍅 "టమాట పంట మార్కెట్ రేటు మరియు ఎరువుల వివరాలు చెప్పండి"
+              </button>
+              <button onclick="sendQuickChat('What is the fertilizer schedule and market price for cotton?')" class="w-full text-left text-xs bg-slate-950/80 hover:bg-slate-800/80 p-3 rounded-xl border border-slate-800/80 text-slate-300 transition">
+                🌿 "What is the fertilizer schedule and market price for cotton?"
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-5 border-t border-slate-800/80 text-[11px] text-slate-500 flex justify-between items-center font-mono">
+          <span>Replies are spoken automatically 🔊</span>
+          <span class="text-purple-400 font-bold">If silent, click Replay Full Audio</span>
+        </div>
+      </div>
+
+      <!-- Right Column: Interactive Chat Interface -->
+      <div class="lg:col-span-2 glass-card rounded-3xl p-6 sm:p-8 lg:p-10 shadow-xl flex flex-col justify-between h-[660px]">
+        
+        <div class="border-b border-slate-800/80 pb-4 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold text-base shadow">
+              <i class="fa-solid fa-robot"></i>
+            </div>
+            <div>
+              <h4 class="text-sm font-bold text-white">Ask AgriGuide</h4>
+              <p class="text-[11px] text-slate-400">Get farming guidance by text or voice</p>
+            </div>
+          </div>
+          <button onclick="clearChatHistory()" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs text-slate-400 hover:text-slate-200 transition">
+            <i class="fa-solid fa-trash-can mr-1"></i> Clear Session
+          </button>
+        </div>
+
+        <div id="chatHistory" aria-live="polite" class="flex-1 overflow-y-auto space-y-4 py-5 pr-2 font-sans text-xs">
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-full bg-purple-500/20 text-purple-400 flex-shrink-0 flex items-center justify-center text-xs font-bold shadow">
+              <i class="fa-solid fa-robot"></i>
+            </div>
+            <div class="bg-slate-950 border border-slate-800 rounded-2xl rounded-tl-none p-4 max-w-[85%] text-slate-200 leading-relaxed shadow-lg">
+              నమస్కారం! నేను మీ <strong>Smart AgriGuide AI సహాయకుడిని</strong>. మీరు తెలుగు, హిందీ, తమిళం లేదా ఇంగ్లీషులో ఏ ప్రశ్నైనా అడగవచ్చు. మైక్‌పై నొక్కి మాట్లాడండి లేదా కింద టైప్ చేయండి!
+            </div>
+          </div>
+        </div>
+
+        <form onsubmit="handleChatSubmit(event)" class="pt-4 border-t border-slate-800/80 flex items-center gap-3">
+          <input type="text" id="chatTextInput" aria-label="Your farming question" placeholder="మీ ప్రశ్నను ఇక్కడ అడగండి / अपना सवाल यहाँ पूछें / Ask your question..." class="flex-1 bg-slate-950 border border-slate-800 rounded-2xl px-5 py-3.5 text-xs text-white focus:outline-none focus:border-purple-500 font-medium">
+          <button type="button" onclick="toggleVoiceRecording()" class="p-3.5 bg-slate-900 hover:bg-slate-800 text-purple-400 rounded-2xl border border-slate-800 transition" title="Speak via microphone">
+            <i class="fa-solid fa-microphone text-sm"></i>
+          </button>
+          <button type="submit" class="px-6 py-3.5 bg-purple-500 hover:bg-purple-400 text-slate-950 font-bold rounded-2xl shadow-xl shadow-purple-500/25 transition flex items-center gap-2 text-xs">
+            <span>Send</span> <i class="fa-solid fa-paper-plane text-[10px]"></i>
+          </button>
+        </form>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Executive Footer -->
+  <footer class="mt-auto border-t border-slate-800/80 bg-slate-950/60 py-6 px-6 sm:px-8 lg:px-12">
+    <div class="w-full flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        <span>Smart AgriGuide © 2026 — Designed & Built by <strong>Bellamkonda Praveen</strong> & <strong>Puchanuthala Arun Kumar</strong></span>
+      </div>
+      <div class="flex items-center gap-4 text-[11px] font-mono text-slate-400">
+        <span>Vel Tech Rangarajan Dr. Sagunthala R&D Institute of Science and Technology</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function toggleMobileNav() {
+      const drawer = document.getElementById('mobileNavDrawer');
+      if (drawer) drawer.classList.toggle('hidden');
+    }
+
+    const API_BASE = window.AGRIGUIDE_API_BASE || ((location.protocol === 'file:' || location.port === '3000') ? "http://127.0.0.1:8000/api/v1" : `${location.origin}/api/v1`);
+    let recognition = null;
+    let isRecording = false;
+    let availableVoices = [];
+    let chatMessageStore = {};
+    let conversationHistory = [];
+    let speechTimer = null;
+    let activeAudioFallback = null;
+    let speechAudioContext = null;
+    let activeSpeechSource = null;
+
+    function unlockAudioOutput() {
+      const AudioContextType = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextType) return;
+      try {
+        if (!speechAudioContext) speechAudioContext = new AudioContextType();
+        if (speechAudioContext.state === 'suspended') {
+          speechAudioContext.resume().catch(() => {});
+        }
+      } catch (err) {
+        console.warn('Audio output could not be unlocked:', err);
+      }
+    }
+
+    function stopAutomaticSpeech() {
+      if (activeSpeechSource) {
+        activeSpeechSource.onended = null;
+        try { activeSpeechSource.stop(); } catch (_) {}
+        activeSpeechSource = null;
+      }
+    }
+
+    async function playWithUnlockedAudioContext(audioBlob) {
+      if (!speechAudioContext || speechAudioContext.state === 'closed') return false;
+      try {
+        await speechAudioContext.resume();
+        const audioBuffer = await speechAudioContext.decodeAudioData(await audioBlob.arrayBuffer());
+        stopAutomaticSpeech();
+        const source = speechAudioContext.createBufferSource();
+        source.buffer = audioBuffer;
+        source.connect(speechAudioContext.destination);
+        source.onended = () => {
+          if (activeSpeechSource === source) activeSpeechSource = null;
+        };
+        activeSpeechSource = source;
+        source.start();
+        return true;
+      } catch (err) {
+        console.warn('Automatic audio playback will use the audio player:', err);
+        return false;
+      }
+    }
+
+    function loadVoices() {
+      if ('speechSynthesis' in window) {
+        availableVoices = window.speechSynthesis.getVoices();
+      }
+    }
+    if ('speechSynthesis' in window) {
+      loadVoices();
+      window.speechSynthesis.onvoiceschanged = loadVoices;
+    }
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+
+      let recognitionSilenceTimer = null;
+
+      recognition.onstart = function() {
+        isRecording = true;
+        const btn = document.getElementById('micButton');
+        btn.classList.add('bg-rose-500', 'hover:bg-rose-400');
+        btn.classList.remove('bg-purple-500', 'hover:bg-purple-400');
+        document.getElementById('micPulseRing').classList.remove('hidden');
+        document.getElementById('micStatusText').innerText = "వింటున్నాను... మాట్లాడండి (Listening...)";
+      };
+
+      recognition.onresult = function(event) {
+        let fullTranscript = "";
+        for (let i = 0; i < event.results.length; ++i) {
+          fullTranscript += event.results[i][0].transcript + " ";
+        }
+        fullTranscript = fullTranscript.trim();
+        document.getElementById('micTranscriptPreview').innerText = `"${fullTranscript}"`;
+        document.getElementById('chatTextInput').value = fullTranscript;
+
+        clearTimeout(recognitionSilenceTimer);
+        recognitionSilenceTimer = setTimeout(() => {
+          if (isRecording && fullTranscript.length > 0) {
+            recognition.stop();
+          }
+        }, 1800);
+      };
+
+      recognition.onerror = function(event) {
+        console.warn("Speech recognition notice:", event.error);
+        if (event.error === 'not-allowed') {
+          alert("Microphone permission blocked! Click the settings icon in your address bar and set Microphone to Allow.");
+        } else if (event.error === 'audio-capture') {
+          alert("No physical microphone detected on your system.");
+        }
+        stopRecordingUI();
+      };
+
+      recognition.onend = function() {
+        stopRecordingUI();
+        const finalTxt = document.getElementById('chatTextInput').value.trim();
+        if (finalTxt.length > 0) {
+          executeChatbotQuery(finalTxt);
+        }
+      };
+    }
+
+    function updateSelectedLanguage() {
+      const lang = document.getElementById('voice_lang_select').value;
+      if (recognition) {
+        recognition.lang = lang;
+      }
+      const badge = document.getElementById('activeLangBadge');
+      if (lang === 'te-IN') {
+        badge.innerText = "TE-IN (తెలుగు)";
+        document.getElementById('micStatusText').innerText = "మైక్‌పై నొక్కి మాట్లాడండి (తెలుగు)";
+        document.getElementById('chatTextInput').placeholder = "వరి, టమాట లేదా నీటిపారుదల గురించి అడగండి...";
+      } else if (lang === 'hi-IN') {
+        badge.innerText = "HI-IN (हिन्दी)";
+        document.getElementById('micStatusText').innerText = "माइक दबाएं और बोलें (हिन्दी)";
+        document.getElementById('chatTextInput').placeholder = "फसल, रोग या मंडी भाव के बारे में पूछें...";
+      } else if (lang === 'ta-IN') {
+        badge.innerText = "TA-IN (தமிழ்)";
+        document.getElementById('micStatusText').innerText = "மைக்கை அழுத்திப் பேசுங்கள் (தமிழ்)";
+        document.getElementById('chatTextInput').placeholder = "பயிர் அல்லது சந்தை விலை பற்றி கேட்கவும்...";
+      } else {
+        badge.innerText = "EN-US (English)";
+        document.getElementById('micStatusText').innerText = "Tap Mic & Speak (English)";
+        document.getElementById('chatTextInput').placeholder = "Ask about crops, diseases, irrigation or prices...";
+      }
+    }
+
+    function toggleVoiceRecording() {
+      unlockAudioOutput();
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.resume();
+      }
+      if (!recognition) {
+        alert("Speech Recognition works in Google Chrome, Microsoft Edge, and Android Chrome. Ensure microphone is connected and allowed.");
+        return;
+      }
+      if (isRecording) {
+        recognition.stop();
+        stopRecordingUI();
+      } else {
+        document.getElementById('chatTextInput').value = "";
+        document.getElementById('micTranscriptPreview').innerText = "";
+        const lang = document.getElementById('voice_lang_select').value;
+        recognition.lang = lang;
+        try {
+          recognition.start();
+        } catch(e) {
+          console.warn("Recognition start restart notice:", e);
+        }
+      }
+    }
+
+    function stopRecordingUI() {
+      isRecording = false;
+      const btn = document.getElementById('micButton');
+      btn.classList.remove('bg-rose-500', 'hover:bg-rose-400');
+      btn.classList.add('bg-purple-500', 'hover:bg-purple-400');
+      document.getElementById('micPulseRing').classList.add('hidden');
+      updateSelectedLanguage();
+    }
+
+    function prepareTextForSpeech(text, lang) {
+      if (!text) return "";
+      let cleaned = text;
+      if (lang.startsWith("te")) {
+        cleaned = cleaned.replace(/\(N-P-K\)/gi, "ఎన్ పీ కే");
+        cleaned = cleaned.replace(/N-P-K/gi, "ఎన్ పీ కే");
+        cleaned = cleaned.replace(/Smart AgriGuide/gi, "స్మార్ట్ అగ్రిగైడ్");
+        cleaned = cleaned.replace(/₹/g, "రూపాయలు ");
+        cleaned = cleaned.replace(/%/g, " శాతం");
+        cleaned = cleaned.replace(/kg\/ha/gi, "కిలోలు");
+      } else if (lang.startsWith("hi")) {
+        cleaned = cleaned.replace(/\(N-P-K\)/gi, "एन पी के");
+        cleaned = cleaned.replace(/N-P-K/gi, "एन पी के");
+        cleaned = cleaned.replace(/₹/g, "रुपये ");
+        cleaned = cleaned.replace(/%/g, " प्रतिशत");
+      } else if (lang.startsWith("ta")) {
+        cleaned = cleaned.replace(/\(N-P-K\)/gi, "என் பி கே");
+        cleaned = cleaned.replace(/N-P-K/gi, "என் பி கே");
+        cleaned = cleaned.replace(/₹/g, "ரூபாய் ");
+        cleaned = cleaned.replace(/%/g, " சதவீதம்");
+      }
+      return cleaned;
+    }
+
+    function splitTextForAudio(text, maxLength = 180) {
+      let remaining = text.replace(/\s+/g, ' ').trim();
+      const chunks = [];
+      while (remaining.length > maxLength) {
+        let splitAt = Math.max(
+          remaining.lastIndexOf('. ', maxLength),
+          remaining.lastIndexOf('? ', maxLength),
+          remaining.lastIndexOf('! ', maxLength),
+          remaining.lastIndexOf('। ', maxLength),
+          remaining.lastIndexOf('।', maxLength)
+        );
+        if (splitAt < Math.floor(maxLength * 0.55)) {
+          splitAt = remaining.lastIndexOf(' ', maxLength);
+          if (splitAt < Math.floor(maxLength * 0.55)) splitAt = maxLength;
+          else splitAt += 1;
+        } else {
+          splitAt += 1;
+        }
+        if (remaining[splitAt] === ' ') splitAt += 1;
+        chunks.push(remaining.slice(0, splitAt).trim());
+        remaining = remaining.slice(splitAt).trim();
+      }
+      if (remaining) chunks.push(remaining);
+      return chunks;
+    }
+
+    function playOnlineAudioFallback(text, shortLang) {
+      const chunks = splitTextForAudio(text);
+      let chunkIndex = 0;
+
+      const playNextChunk = () => {
+        if (chunkIndex >= chunks.length) {
+          activeAudioFallback = null;
+          return;
+        }
+        try {
+          const safeText = encodeURIComponent(chunks[chunkIndex++]);
+          const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${safeText}&tl=${shortLang}&client=tw-ob`;
+          const audio = new Audio(audioUrl);
+          activeAudioFallback = audio;
+          audio.onended = playNextChunk;
+          audio.onerror = () => {
+            if (activeAudioFallback === audio) activeAudioFallback = null;
+            console.warn("Could not load a speech audio segment.");
+          };
+          audio.play().catch(err => {
+            if (activeAudioFallback === audio) activeAudioFallback = null;
+            console.warn("Audio playback was blocked; use the reply's replay button:", err);
+          });
+        } catch (err) {
+          activeAudioFallback = null;
+          console.warn("Audio element fallback exception:", err);
+        }
+      };
+
+      playNextChunk();
+    }
+
+    function speakInLanguage(text, langCode) {
+      if (!text) return;
+      if (activeAudioFallback) {
+        activeAudioFallback.pause();
+        activeAudioFallback = null;
+      }
+      const cleanLang = langCode || document.getElementById('voice_lang_select').value || 'te-IN';
+      const shortLang = cleanLang.substring(0, 2).toLowerCase();
+      const spokenText = prepareTextForSpeech(text, cleanLang);
+
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.resume();
+        clearInterval(speechTimer);
+        loadVoices();
+
+        const matchedVoice = availableVoices.find(v => 
+          v.lang.toLowerCase().replace('_', '-').startsWith(shortLang) || 
+          v.lang.toLowerCase().includes(cleanLang.toLowerCase()) ||
+          v.name.toLowerCase().includes(shortLang === 'te' ? 'telugu' : (shortLang === 'hi' ? 'hindi' : (shortLang === 'ta' ? 'tamil' : 'english')))
+        );
+
+        if (matchedVoice) {
+          const utterance = new SpeechSynthesisUtterance(spokenText);
+          utterance.voice = matchedVoice;
+          utterance.lang = cleanLang;
+          utterance.rate = 0.92;
+          utterance.pitch = 1.0;
+          window.activeUtterance = utterance;
+
+          utterance.onend = function() {
+            clearInterval(speechTimer);
+            window.activeUtterance = null;
+          };
+
+          utterance.onerror = function(e) {
+            clearInterval(speechTimer);
+            window.activeUtterance = null;
+            playOnlineAudioFallback(spokenText, shortLang);
+          };
+
+          speechTimer = setInterval(() => {
+            if (window.speechSynthesis.speaking) {
+              window.speechSynthesis.pause();
+              window.speechSynthesis.resume();
+            } else {
+              clearInterval(speechTimer);
+            }
+          }, 8000);
+
+          window.speechSynthesis.speak(utterance);
+          return;
+        }
+      }
+
+      playOnlineAudioFallback(spokenText, shortLang);
+    }
+
+    function replaySavedMessage(msgId, lang) {
+      const text = chatMessageStore[msgId];
+      if (text) {
+        speakInLanguage(text, lang);
+      }
+    }
+
+    async function prepareReplyAudio(text, langCode, player, replayButton, statusLabel) {
+      replayButton.disabled = true;
+      replayButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i><span>Preparing voice…</span>';
+      statusLabel.textContent = 'Preparing spoken reply…';
+
+      try {
+        const response = await fetch(`${API_BASE}/speech`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: prepareTextForSpeech(text, langCode), language: langCode })
+        });
+        if (!response.ok) {
+          let detail = `Speech request failed (${response.status}).`;
+          try {
+            const errorData = await response.json();
+            detail = errorData.detail || detail;
+          } catch (_) {}
+          throw new Error(detail);
+        }
+
+        const audioBlob = await response.blob();
+        if (!audioBlob.size) throw new Error('Gemini returned an empty audio file.');
+
+        const previousUrl = player.dataset.objectUrl;
+        if (previousUrl) URL.revokeObjectURL(previousUrl);
+        const audioUrl = URL.createObjectURL(audioBlob);
+        player.dataset.objectUrl = audioUrl;
+        player.src = audioUrl;
+        player.classList.remove('hidden');
+        player.load();
+
+        replayButton.disabled = false;
+        replayButton.innerHTML = '<i class="fa-solid fa-volume-high"></i><span>Replay Voice</span>';
+        replayButton.onclick = async () => {
+          try {
+            stopAutomaticSpeech();
+            await player.play();
+            statusLabel.textContent = 'Playing voice…';
+          } catch (_) {
+            statusLabel.textContent = 'Tap Play on the audio controls to hear the reply.';
+          }
+        };
+        player.onplay = () => { statusLabel.textContent = 'Playing voice…'; };
+        player.onended = () => { statusLabel.textContent = 'Voice reply finished.'; };
+        statusLabel.textContent = 'Voice is ready. If it did not start, press Play below.';
+
+        if (await playWithUnlockedAudioContext(audioBlob)) {
+          statusLabel.textContent = 'Playing voice…';
+        } else {
+          try {
+            await player.play();
+            statusLabel.textContent = 'Playing voice…';
+          } catch (_) {
+            // Browsers may block automatic audio; the visible player remains available.
+            statusLabel.textContent = 'Voice is ready. Press Play below to hear it.';
+          }
+        }
+      } catch (err) {
+        const detail = err instanceof Error ? err.message : 'Audio could not be prepared.';
+        statusLabel.textContent = `Voice unavailable: ${detail}`;
+        replayButton.disabled = false;
+        replayButton.innerHTML = '<i class="fa-solid fa-volume-high"></i><span>Try device voice</span>';
+        replayButton.onclick = () => speakInLanguage(text, langCode);
+      }
+    }
+
+    async function executeChatbotQuery(userMsg) {
+      if (!userMsg) return;
+      const history = document.getElementById('chatHistory');
+      const selectedLang = document.getElementById('voice_lang_select').value;
+      
+      const userBubble = document.createElement('div');
+      userBubble.className = "flex items-start justify-end gap-3";
+      const userText = document.createElement('div');
+      userText.className = "agri-chat-user-text bg-purple-500/20 border border-purple-500/30 rounded-2xl rounded-tr-none p-4 max-w-[85%] leading-relaxed shadow-sm font-semibold whitespace-pre-wrap";
+      userText.textContent = userMsg;
+      const userIcon = document.createElement('div');
+      userIcon.className = "w-8 h-8 rounded-full bg-slate-800 text-slate-300 flex-shrink-0 flex items-center justify-center text-xs font-bold shadow";
+      userIcon.innerHTML = '<i class="fa-solid fa-user"></i>';
+      userBubble.append(userText, userIcon);
+      history.appendChild(userBubble);
+      document.getElementById('chatTextInput').value = "";
+      history.scrollTop = history.scrollHeight;
+
+      const typingId = "typing-" + Date.now();
+      const thinkingText = selectedLang.startsWith('te') ? "సమాధానాన్ని సిద్ధం చేస్తోంది..." : (selectedLang.startsWith('hi') ? "जवाब तैयार कर रहा हूँ..." : "AgriGuide AI is analyzing your question...");
+      
+      const typingBubble = document.createElement('div');
+      typingBubble.id = typingId;
+      typingBubble.className = "flex items-start gap-3";
+      typingBubble.innerHTML = `
+        <div class="w-8 h-8 rounded-full bg-purple-500/20 text-purple-400 flex-shrink-0 flex items-center justify-center text-xs font-bold shadow">
+          <i class="fa-solid fa-robot"></i>
+        </div>
+        <div class="bg-slate-950 border border-slate-800 rounded-2xl rounded-tl-none p-3.5 text-slate-400 italic">
+          ${thinkingText}
+        </div>
+      `;
+      history.appendChild(typingBubble);
+      history.scrollTop = history.scrollHeight;
+
+      try {
+        const res = await fetch(`${API_BASE}/chatbot`, {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({
+            message: userMsg, 
+            language: selectedLang,
+            history: conversationHistory.slice(-10)
+          })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.detail || `Chat request failed (${res.status}).`);
+        }
+        
+        const typingElem = document.getElementById(typingId);
+        if (typingElem) typingElem.remove();
+
+        const botReply = typeof data.bot_response === 'string' ? data.bot_response : '';
+        if (!botReply.trim()) throw new Error('The agent returned an empty reply. Please try again.');
+        const detectedLanguage = data.detected_language || 'en';
+        const targetVoice = data.voice_lang || 'en-US';
+        const msgKey = "msg_" + Date.now();
+        chatMessageStore[msgKey] = botReply;
+        conversationHistory.push(
+          {role: 'user', content: userMsg},
+          {role: 'assistant', content: botReply}
+        );
+        conversationHistory = conversationHistory.slice(-10);
+
+        const replyBubble = document.createElement('div');
+        replyBubble.className = "flex items-start gap-3";
+        const agentIcon = document.createElement('div');
+        agentIcon.className = "w-8 h-8 rounded-full bg-purple-500/20 text-purple-400 flex-shrink-0 flex items-center justify-center text-xs font-bold shadow";
+        agentIcon.innerHTML = '<i class="fa-solid fa-robot"></i>';
+        const replyCard = document.createElement('div');
+        replyCard.className = "bg-slate-950 border border-slate-800 rounded-2xl rounded-tl-none p-5 max-w-[88%] text-slate-200 leading-relaxed shadow-lg space-y-2.5";
+        const replyHeader = document.createElement('div');
+        replyHeader.className = "flex items-center justify-between gap-3";
+        const languageBadge = document.createElement('span');
+        languageBadge.className = "text-[10px] uppercase font-bold text-purple-400 font-mono px-2.5 py-0.5 rounded-full bg-purple-500/10 border border-purple-500/20";
+        languageBadge.textContent = `${detectedLanguage.toUpperCase()} Agronomic Advisory`;
+        const agentBadge = document.createElement('span');
+        agentBadge.className = "text-[10px] text-slate-500 font-mono text-right";
+        agentBadge.textContent = `Gemini Agent · ${data.agent_model || 'configured model'}`;
+        replyHeader.append(languageBadge, agentBadge);
+        const replyText = document.createElement('p');
+        replyText.className = "leading-relaxed text-slate-100 text-xs sm:text-sm whitespace-pre-wrap";
+        replyText.textContent = botReply;
+        const replyFooter = document.createElement('div');
+        replyFooter.className = "pt-2 border-t border-slate-800/80 flex items-center justify-between";
+        const replayButton = document.createElement('button');
+        replayButton.type = 'button';
+        replayButton.className = "inline-flex items-center gap-1.5 text-xs text-purple-400 hover:text-purple-300 font-semibold transition";
+        replayButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i><span>Preparing voice…</span>';
+        replayButton.disabled = true;
+        const voiceLabel = document.createElement('span');
+        voiceLabel.className = "text-[10px] text-slate-500 font-mono";
+        voiceLabel.textContent = targetVoice;
+        replyFooter.append(replayButton, voiceLabel);
+        const audioStatus = document.createElement('p');
+        audioStatus.className = 'text-[11px] text-slate-400 min-h-4';
+        audioStatus.setAttribute('aria-live', 'polite');
+        audioStatus.textContent = 'Preparing spoken reply…';
+        const audioPlayer = document.createElement('audio');
+        audioPlayer.controls = true;
+        audioPlayer.preload = 'none';
+        audioPlayer.className = 'hidden w-full';
+        audioPlayer.setAttribute('aria-label', 'AgriGuide spoken reply');
+        replyCard.append(replyHeader, replyText, audioStatus, audioPlayer, replyFooter);
+        replyBubble.append(agentIcon, replyCard);
+        history.appendChild(replyBubble);
+        history.scrollTop = history.scrollHeight;
+
+        prepareReplyAudio(botReply, targetVoice, audioPlayer, replayButton, audioStatus);
+
+      } catch (err) {
+        const typingElem = document.getElementById(typingId);
+        if (typingElem) typingElem.remove();
+
+        const errBubble = document.createElement('div');
+        errBubble.className = "p-3.5 bg-rose-500/10 border border-rose-500/30 rounded-xl text-xs text-rose-300";
+        const detail = err instanceof Error ? err.message : 'Unknown chat error.';
+        errBubble.textContent = `AgriGuide could not respond: ${detail} Check that FastAPI is running at ${API_BASE}.`;
+        history.appendChild(errBubble);
+        history.scrollTop = history.scrollHeight;
+      }
+    }
+
+    function handleChatSubmit(e) {
+      e.preventDefault();
+      const txt = document.getElementById('chatTextInput').value.trim();
+      if (txt) {
+        unlockAudioOutput();
+        executeChatbotQuery(txt);
+      }
+    }
+
+    function sendQuickChat(query) {
+      unlockAudioOutput();
+      executeChatbotQuery(query);
+    }
+
+    function clearChatHistory() {
+      chatMessageStore = {};
+      conversationHistory = [];
+      document.getElementById('chatHistory').innerHTML = `
+        <div class="flex items-start gap-3">
+          <div class="w-8 h-8 rounded-full bg-purple-500/20 text-purple-400 flex-shrink-0 flex items-center justify-center text-xs font-bold shadow">
+            <i class="fa-solid fa-robot"></i>
+          </div>
+          <div class="bg-slate-950 border border-slate-800 rounded-2xl rounded-tl-none p-4 max-w-[85%] text-slate-200 leading-relaxed shadow-lg">
+            చాట్ క్లియర్ చేయబడింది! మీ పంటల గురించి ఏదైనా ప్రశ్న అడగండి.
+          </div>
+        </div>
+      `;
+    }
+
+    updateSelectedLanguage();
+  </script>
+</body>
+</html>

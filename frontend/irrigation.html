@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart AgriGuide | Irrigation Planner</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    code, .font-mono { font-family: 'JetBrains Mono', monospace; }
+    .glass-card {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.75) 0%, rgba(15, 23, 42, 0.45) 100%);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(51, 65, 85, 0.45);
+    }
+  </style>
+  <meta name="theme-color" content="#f2f6f1">
+  <meta name="description" content="Get a weather-aware irrigation recommendation using soil and field conditions.">
+  <link rel="stylesheet" href="professional.css">
+</head>
+<body class="bg-[#030712] text-slate-100 min-h-screen flex flex-col justify-between selection:bg-blue-500 selection:text-slate-950">
+
+  
+  <!-- Professional Sticky Navigation Header -->
+  <header class="border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-xl sticky top-0 z-50 px-8 lg:px-12 py-3.5 flex items-center justify-between w-full">
+    <div class="flex items-center space-x-3.5">
+      <a href="index.html" class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 p-[1px] shadow-lg shadow-emerald-500/20 flex items-center justify-center">
+        <div class="w-full h-full bg-slate-950 rounded-[11px] flex items-center justify-center text-emerald-400">
+          <i class="fa-solid fa-seedling text-lg"></i>
+        </div>
+      </a>
+      <div>
+        <div class="flex items-center gap-2">
+          <h1 class="text-base font-bold tracking-tight text-white font-display">Smart AgriGuide</h1>
+          <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-mono font-semibold tracking-wide">FARMER TOOLS</span>
+        </div>
+        <p class="text-[11px] text-slate-400 font-medium">Practical support for everyday farm decisions</p>
+      </div>
+    </div>
+    
+    <nav class="hidden xl:flex items-center gap-2.5">
+      <a href="index.html" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white bg-slate-900/60 hover:bg-slate-800/80 border border-slate-800 transition flex items-center gap-2"><i class="fa-solid fa-gauge-high text-slate-400"></i><span>Dashboard</span></a><a href="crop.html" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white bg-slate-900/60 hover:bg-slate-800/80 border border-slate-800 transition flex items-center gap-2"><i class="fa-solid fa-seedling text-slate-400"></i><span>Crop Advisor</span></a><a href="disease.html" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white bg-slate-900/60 hover:bg-slate-800/80 border border-slate-800 transition flex items-center gap-2"><i class="fa-solid fa-microscope text-slate-400"></i><span>Leaf Pathology</span></a><a aria-current="page" href="irrigation.html" class="px-4 py-2 rounded-xl text-xs font-semibold bg-emerald-500 text-slate-950 shadow-lg shadow-emerald-500/25 flex items-center gap-2"><i class="fa-solid fa-droplet"></i><span>Smart Irrigation</span></a><a href="market.html" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white bg-slate-900/60 hover:bg-slate-800/80 border border-slate-800 transition flex items-center gap-2"><i class="fa-solid fa-chart-line text-slate-400"></i><span>Market Intelligence</span></a><a href="assistant.html" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white bg-slate-900/60 hover:bg-slate-800/80 border border-slate-800 transition flex items-center gap-2"><i class="fa-solid fa-microphone-lines text-slate-400"></i><span>Voice AI Assistant</span></a>
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span class="text-[11px] tracking-wide">FastAPI Connected</span>
+      </div>
+    </div>
+  </header>
+
+
+  <main class="w-full px-8 lg:px-12 py-8 flex-1">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 w-full">
+      
+      <!-- Input Panel -->
+      <div class="lg:col-span-2 glass-card rounded-3xl p-8 lg:p-10 shadow-xl space-y-6">
+        <div class="border-b border-slate-800/80 pb-5">
+          <span class="text-xs font-semibold uppercase tracking-wider text-blue-400 font-mono">Module 03 • Hydrological Intelligence</span>
+          <h2 class="text-2xl font-extrabold text-white mt-1 flex items-center gap-2.5">
+            <i class="fa-solid fa-cloud-showers-water text-blue-400"></i> Plan your irrigation
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">Enter soil moisture and field details to get irrigation guidance informed by the local weather forecast.</p>
+        </div>
+
+        <form onsubmit="submitIrrigationForm(event)" class="space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="bg-slate-950/70 p-5 rounded-2xl border border-slate-800/80 shadow-inner">
+              <label class="text-xs font-medium text-slate-300 flex justify-between items-center">
+                <span>Current Soil Volumetric Water Content</span>
+                <span id="sm_val" class="text-blue-400 font-mono font-bold bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">22.0%</span>
+              </label>
+              <input type="range" id="sm_input" min="5" max="50" step="0.5" value="22" class="w-full mt-3 accent-blue-500 h-1.5 bg-slate-800 rounded-lg cursor-pointer" oninput="sm_val.innerText=this.value+'%'">
+              <div class="flex justify-between text-[10px] text-slate-500 mt-1.5 font-mono">
+                <span>5% (Dry)</span><span>25% (Moderate)</span><span>50% (Saturated)</span>
+              </div>
+            </div>
+
+            <div class="bg-slate-950/70 p-5 rounded-2xl border border-slate-800/80 shadow-inner">
+              <label class="text-xs font-medium text-slate-300 flex justify-between items-center">
+                <span>Soil Field Capacity (FC)</span>
+                <span id="fc_val" class="text-blue-400 font-mono font-bold bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">35.0%</span>
+              </label>
+              <input type="range" id="fc_input" min="20" max="45" step="0.5" value="35" class="w-full mt-3 accent-blue-500 h-1.5 bg-slate-800 rounded-lg cursor-pointer" oninput="fc_val.innerText=this.value+'%'">
+              <div class="flex justify-between text-[10px] text-slate-500 mt-1.5 font-mono">
+                <span>20% (Sandy)</span><span>35% (Loam)</span><span>45% (Clay)</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-slate-950/70 p-4 rounded-2xl border border-slate-800/80">
+              <label class="text-[11px] font-semibold text-slate-400 block mb-1">Root Depth ($Z_r$ in mm)</label>
+              <input type="number" id="zr_input" value="300" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-blue-500 font-mono">
+            </div>
+            <div class="bg-slate-950/70 p-4 rounded-2xl border border-slate-800/80">
+              <label class="text-[11px] font-semibold text-slate-400 block mb-1">Latitude</label>
+              <input type="number" step="0.0001" id="lat_input" value="13.0827" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-blue-500 font-mono">
+            </div>
+            <div class="bg-slate-950/70 p-4 rounded-2xl border border-slate-800/80">
+              <label class="text-[11px] font-semibold text-slate-400 block mb-1">Longitude</label>
+              <input type="number" step="0.0001" id="lon_input" value="80.2707" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-blue-500 font-mono">
+            </div>
+          </div>
+
+          <button type="submit" class="w-full py-4 bg-blue-500 hover:bg-blue-400 text-slate-950 font-bold rounded-2xl shadow-xl shadow-blue-500/25 transition flex items-center justify-center gap-2 text-sm tracking-wide">
+            <i class="fa-solid fa-water text-base"></i> Get irrigation guidance
+          </button>
+        </form>
+      </div>
+
+      <!-- Result Panel -->
+      <div class="glass-card rounded-3xl p-8 lg:p-10 shadow-xl flex flex-col justify-between">
+        <div>
+          <div class="border-b border-slate-800/80 pb-5 mb-6">
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 font-mono">Advisory Output</span>
+            <h3 class="text-2xl font-extrabold text-white mt-1 flex items-center gap-2">
+              <i class="fa-solid fa-gauge text-blue-400"></i> Watering guidance
+            </h3>
+            <p class="text-xs text-slate-400 mt-1">A forecast-aware recommendation for your field</p>
+          </div>
+
+          <div id="irrigationResultContainer" aria-live="polite">
+            <div class="text-center py-20 text-slate-500 space-y-3">
+              <div class="w-16 h-16 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center text-3xl mx-auto opacity-40">
+                <i class="fa-solid fa-faucet-drip"></i>
+              </div>
+              <p class="text-xs text-slate-400 max-w-[260px] mx-auto">Click "Get irrigation guidance" to evaluate real-time weather-adjusted irrigation requirements.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-6 border-t border-slate-800/80 text-[11px] text-slate-500 space-y-1.5">
+          <div class="flex justify-between">
+            <span>Formulation:</span>
+            <span class="text-slate-300 font-mono">Dynamic Piecewise Rule Engine</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Water Savings vs Fixed:</span>
+            <span class="text-blue-400 font-mono font-semibold">41.36% Reduction</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    const API_BASE = window.AGRIGUIDE_API_BASE || ((location.protocol === 'file:' || location.port === '3000') ? "http://127.0.0.1:8000/api/v1" : `${location.origin}/api/v1`);
+
+    async function submitIrrigationForm(e) {
+      e.preventDefault();
+      const payload = {
+        soil_moisture_pct: parseFloat(document.getElementById('sm_input').value),
+        field_capacity_pct: parseFloat(document.getElementById('fc_input').value),
+        root_zone_depth_mm: parseFloat(document.getElementById('zr_input').value),
+        latitude: parseFloat(document.getElementById('lat_input').value),
+        longitude: parseFloat(document.getElementById('lon_input').value)
+      };
+
+      try {
+        const res = await fetch(`${API_BASE}/advisory-irrigation`, {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+
+        document.getElementById('irrigationResultContainer').innerHTML = `
+          <div class="bg-slate-950/80 p-5 rounded-2xl border border-slate-800 space-y-3.5 shadow-lg">
+            <div class="flex justify-between items-center py-1 border-b border-slate-800/60">
+              <span class="text-xs text-slate-400 font-medium">Precipitation Likelihood ($P_{rain}$)</span>
+              <span class="text-sm font-mono text-cyan-400 font-bold bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/20">${data.precipitation_probability_pct}%</span>
+            </div>
+            <div class="flex justify-between items-center py-1 border-b border-slate-800/60">
+              <span class="text-xs text-slate-400 font-medium">Forecasted Rainfall ($R_{forecast}$)</span>
+              <span class="text-sm font-mono text-slate-200 font-bold">${data.forecast_rainfall_mm} mm</span>
+            </div>
+            <div class="flex justify-between items-center py-1 border-b border-slate-800/60">
+              <span class="text-xs text-slate-400 font-medium">Recommended Water Depth ($I_{req}$)</span>
+              <span class="text-base font-mono text-blue-400 font-black">${data.recommended_irrigation_depth_mm} mm</span>
+            </div>
+            <div class="pt-2">
+              <span class="text-[11px] text-slate-400 block mb-1 font-semibold uppercase tracking-wider">Automated Operational Advisory:</span>
+              <p class="text-xs text-slate-200 leading-relaxed bg-slate-900/70 p-3.5 rounded-xl border border-slate-800">${data.advisory_status}</p>
+            </div>
+          </div>
+        `;
+      } catch (err) {
+        document.getElementById('irrigationResultContainer').innerHTML = `
+          <div class="p-4 bg-rose-500/10 border border-rose-500/30 rounded-2xl text-xs text-rose-300">
+            Backend API offline or unreachable at ${API_BASE}.
+          </div>
+        `;
+      }
+    }
+  </script>
+</body>
+</html>

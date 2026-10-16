@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart AgriGuide | Market Insights</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #030712;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(245, 158, 11, 0.08) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.06) 0px, transparent 50%);
+      background-attachment: fixed;
+    }
+    code, .font-mono { font-family: 'JetBrains Mono', monospace; }
+    
+    .glass-card {
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.75) 0%, rgba(10, 15, 30, 0.5) 100%);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(51, 65, 85, 0.4);
+    }
+  </style>
+  <meta name="theme-color" content="#f2f6f1">
+  <meta name="description" content="Compare crop prices, market options, and estimated payouts for your harvest.">
+  <link rel="stylesheet" href="professional.css">
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col justify-between selection:bg-amber-500 selection:text-slate-950">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 w-full border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-xl">
+    <div class="w-full px-6 sm:px-8 lg:px-12 h-16 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3 group">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-600 via-emerald-500 to-teal-400 p-[1.5px] shadow-lg shadow-emerald-500/20">
+          <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center text-emerald-400">
+            <i class="fa-solid fa-leaf text-sm"></i>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-sm font-bold tracking-tight text-white font-display">Smart AgriGuide</span>
+            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-mono font-bold">FARMER TOOLS</span>
+          </div>
+        </div>
+      </a>
+      <nav class="hidden lg:flex items-center gap-1.5 p-1 rounded-2xl bg-slate-900/60 border border-slate-800/90">
+        <a href="index.html" class="px-3.5 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-white">Dashboard</a>
+        <a href="crop.html" class="px-3.5 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-white">Crop Advisor</a>
+        <a href="disease.html" class="px-3.5 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-white">Leaf Pathology</a>
+        <a href="irrigation.html" class="px-3.5 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-white">Smart Irrigation</a>
+        <a aria-current="page" href="market.html" class="px-3.5 py-2 rounded-xl text-xs font-semibold text-white bg-slate-800/90 border border-slate-700">Market Intelligence</a>
+        <a href="assistant.html" class="px-3.5 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-white">Voice AI Assistant</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="w-full px-6 sm:px-8 lg:px-12 py-8 space-y-8 flex-1">
+    <div>
+      <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight flex items-center gap-3">
+        <span class="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-base">
+          <i class="fa-solid fa-chart-line"></i>
+        </span>
+        Compare crop prices and buyer options
+      </h2>
+    </div>
+
+    <!-- Official daily mandi prices -->
+    <div class="glass-card rounded-2xl p-4 border border-amber-500/30 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="space-y-1">
+        <span class="text-xs font-bold text-white uppercase font-mono">AGMARKNET Daily Mandi Prices</span>
+        <p id="liveMandiStatus" class="text-[11px] text-slate-400">Loading official market reports…</p>
+        <a href="https://www.data.gov.in/catalog/current-daily-price-various-commodities-various-markets-mandi" target="_blank" rel="noopener noreferrer" class="text-[11px] text-amber-300 underline underline-offset-2">Official dataset details</a>
+      </div>
+      <div id="liveMandiPills" class="flex flex-wrap items-center gap-2 text-xs font-mono">
+        <span class="px-3 py-1 rounded-xl bg-slate-900 border border-slate-800 text-slate-300">Loading market reports…</span>
+      </div>
+    </div>
+
+    <!-- Control Panel -->
+    <div class="glass-card rounded-3xl p-6 sm:p-8 lg:p-10 shadow-xl space-y-6">
+      <form onsubmit="submitMarketForm(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-5">
+        <div class="bg-slate-950/80 p-4 rounded-2xl border border-slate-800/80">
+          <label class="text-[11px] font-semibold text-slate-400 block mb-1.5 uppercase font-mono">Select Commodity</label>
+          <select id="market_crop_select" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-white">
+            <option value="Rice" selected>Rice (Paddy)</option>
+            <option value="Tomato">Tomato</option>
+            <option value="Maize">Maize (Corn)</option>
+            <option value="Cotton">Cotton (Kapas)</option>
+            <option value="Potato">Potato</option>
+            <option value="Chickpea">Chickpea (Gram)</option>
+          </select>
+        </div>
+        <div class="bg-slate-950/80 p-4 rounded-2xl border border-slate-800/80">
+          <label for="market_state_select" class="text-[11px] font-semibold text-slate-400 block mb-1.5 uppercase font-mono">State / UT</label>
+          <select id="market_state_select" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-white">
+            <option>Tamil Nadu</option><option selected>Andhra Pradesh</option><option>Telangana</option><option>Karnataka</option><option>Kerala</option>
+            <option>Maharashtra</option><option>Gujarat</option><option>Rajasthan</option><option>Madhya Pradesh</option><option>Uttar Pradesh</option>
+            <option>Punjab</option><option>Haryana</option><option>Himachal Pradesh</option><option>Uttarakhand</option><option>Delhi</option>
+            <option>Jammu and Kashmir</option><option>Ladakh</option><option>Chandigarh</option><option>Bihar</option><option>Jharkhand</option>
+            <option>West Bengal</option><option>Odisha</option><option>Chhattisgarh</option><option>Goa</option><option>Assam</option>
+            <option>Arunachal Pradesh</option><option>Manipur</option><option>Meghalaya</option><option>Mizoram</option><option>Nagaland</option>
+            <option>Sikkim</option><option>Tripura</option><option>Andaman and Nicobar Islands</option><option>Dadra and Nagar Haveli and Daman and Diu</option>
+            <option>Lakshadweep</option><option>Puducherry</option>
+          </select>
+        </div>
+        <div class="bg-slate-950/80 p-4 rounded-2xl border border-slate-800/80">
+          <label for="market_district_filter" class="text-[11px] font-semibold text-slate-400 block mb-1.5 uppercase font-mono">District</label>
+          <input type="text" id="market_district_filter" value="Nellore" placeholder="e.g. Nellore" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-white">
+          <p class="text-[10px] text-slate-500 mt-1">Optional; narrows the official feed request.</p>
+        </div>
+        <div class="bg-slate-950/80 p-4 rounded-2xl border border-slate-800/80">
+          <label class="text-[11px] font-semibold text-slate-400 block mb-1.5 uppercase font-mono">Harvest Volume (Quintals)</label>
+          <input type="number" id="harvest_yield" value="30" min="1" max="1000" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white font-mono">
+        </div>
+        <div class="bg-slate-950/80 p-4 rounded-2xl border border-slate-800/80">
+          <label class="text-[11px] font-semibold text-slate-400 block mb-1.5 uppercase font-mono">Distance to Mandi (km)</label>
+          <input type="number" id="mandi_dist" value="15" min="1" max="250" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white font-mono">
+        </div>
+        <div class="flex items-end">
+          <button id="marketBtn" type="submit" class="w-full py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-2xl shadow-xl shadow-amber-500/20 transition-all text-sm">
+            <i class="fa-solid fa-chart-pie mr-2"></i> Compare market options
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Output Container -->
+    <div id="marketResultContainer" aria-live="polite">
+      <div class="glass-card rounded-3xl p-16 text-center text-slate-500 space-y-3">
+        <div class="w-16 h-16 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center text-3xl mx-auto text-amber-400 opacity-40">
+          <i class="fa-solid fa-scale-balanced"></i>
+        </div>
+        <p class="text-xs text-slate-400 max-w-md mx-auto">Select a crop and state to view the latest available daily mandi price report and compare estimated selling options.</p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="mt-auto border-t border-slate-800/80 bg-slate-950/60 py-6 px-6 sm:px-8 lg:px-12 text-xs text-slate-500 text-center">
+    Smart AgriGuide © 2026 — Designed & Built by Bellamkonda Praveen & Puchanuthala Arun Kumar (Vel Tech University)
+  </footer>
+
+  <script>
+    const API_BASE = window.AGRIGUIDE_API_BASE || ((location.protocol === 'file:' || location.port === '3000') ? "http://127.0.0.1:8000/api/v1" : `${location.origin}/api/v1`);
+
+    async function submitMarketForm(e) {
+      e.preventDefault();
+      const btn = document.getElementById('marketBtn');
+      const originalHTML = btn.innerHTML;
+      btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Loading market data…';
+      btn.disabled = true;
+
+      const payload = {
+        crop_name: document.getElementById('market_crop_select').value,
+        state: document.getElementById('market_state_select').value,
+        district: document.getElementById('market_district_filter').value.trim() || null,
+        harvest_yield_quintals: parseFloat(document.getElementById('harvest_yield').value),
+        distance_to_mandi_km: parseFloat(document.getElementById('mandi_dist').value)
+      };
+
+      try {
+        const res = await fetch(`${API_BASE}/market-strategy`, {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        const p = data.price_analytics;
+        const isHold = data.optimal_decision.includes("HOLD");
+
+        let channelsRows = data.selling_channels_comparison.map((ch, idx) => `
+          <tr class="border-b border-slate-800/60 hover:bg-slate-800/20 transition text-xs">
+            <td class="py-4 px-5 font-bold text-white flex items-center gap-2">
+              ${idx === 0 ? '<span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px] border border-emerald-500/30 font-mono">TOP PAYOUT</span>' : ''}
+              ${ch.channel_type}
+            </td>
+            <td class="py-4 px-5 text-slate-300 font-medium">${ch.target_buyer}</td>
+            <td class="py-4 px-5 text-slate-400 font-mono text-[11px]">${ch.market_location}</td>
+            <td class="py-4 px-5 font-mono font-bold text-white">₹${ch.offered_rate_inr_qtl}</td>
+            <td class="py-4 px-5 font-mono text-slate-400">${ch.deductions_pct}%</td>
+            <td class="py-4 px-5 text-slate-300">${ch.payment_speed}</td>
+            <td class="py-4 px-5 font-mono font-black text-emerald-400 text-sm">₹${ch.estimated_net_payout_inr}</td>
+          </tr>
+        `).join("");
+
+        document.getElementById('marketResultContainer').innerHTML = `
+          <!-- KPI Cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div class="glass-card p-6 rounded-3xl shadow-lg border-emerald-500/20">
+              <span class="text-xs text-slate-400 font-medium block">${p.current_price_is_live ? 'Latest reported mandi modal price' : 'Bundled benchmark price (not live)'}</span>
+              <div class="text-3xl font-black text-white font-mono mt-2">₹${p.current_year_modal_2026} <span class="text-xs font-normal text-slate-500">/ qtl</span></div>
+              <span class="text-[11px] text-slate-400 font-mono mt-2 block">${p.current_price_is_live
+                ? `${escapeHTML(p.current_price_market || '')}${p.current_price_district ? `, ${escapeHTML(p.current_price_district)}` : ''} · report ${escapeHTML(p.current_price_report_date || 'date unavailable')} · AGMARKNET${p.current_price_min && p.current_price_max ? ` · range ₹${p.current_price_min}–₹${p.current_price_max}` : ''}`
+                : p.live_feed_status === 'missing_api_key'
+                  ? 'Configure DATA_GOV_IN_API_KEY on the backend to see reported prices.'
+                  : p.live_feed_status === 'feed_unavailable'
+                    ? 'Official market feed is unavailable; showing a bundled benchmark.'
+                    : `No official ${escapeHTML(data.crop)} quote was found for ${escapeHTML(data.state)}; showing a bundled benchmark.`}</span>
+              <span class="text-[11px] text-slate-500 font-mono mt-2 block">Bundled MSP reference: ₹${p.government_msp}</span>
+            </div>
+
+            <div class="glass-card p-6 rounded-3xl shadow-lg">
+              <span class="text-xs text-slate-400 font-medium block">Planning reference benchmark</span>
+              <div class="text-3xl font-black text-slate-300 font-mono mt-2">₹${p.previous_year_modal_2025} <span class="text-xs font-normal text-slate-500">/ qtl</span></div>
+              <span class="text-[11px] font-mono mt-2 block font-bold ${p.yoy_price_change_pct >= 0 ? 'text-emerald-400' : 'text-rose-400'}">
+                ${p.yoy_price_change_pct >= 0 ? '▲ +' : '▼ '}${p.yoy_price_change_pct}% vs bundled reference
+              </span>
+              <span class="text-[11px] text-slate-500 font-mono mt-1 block">Not an official historical mandi quote</span>
+            </div>
+
+            <div class="glass-card p-6 rounded-3xl shadow-lg">
+              <span class="text-xs text-slate-400 font-medium block">Illustrative 7-day estimate</span>
+              <div class="text-3xl font-black text-amber-400 font-mono mt-2">₹${p.projected_7d_rate} <span class="text-xs font-normal text-slate-500">/ qtl</span></div>
+              <span class="text-[11px] text-slate-400 font-mono mt-2 block">Planning estimate; not a live forecast</span>
+            </div>
+
+            <div class="p-6 rounded-3xl border shadow-lg ${isHold ? 'bg-amber-500/10 border-amber-500/30' : 'bg-emerald-500/10 border-emerald-500/30'} flex flex-col justify-between">
+              <div>
+                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 font-mono">Planning suggestion</span>
+                <div class="text-3xl font-black ${isHold ? 'text-amber-400' : 'text-emerald-400'} font-mono mt-1">${data.optimal_decision}</div>
+              </div>
+              <span class="text-xs text-slate-200 mt-2 font-medium leading-relaxed">${data.recommended_action}</span>
+            </div>
+          </div>
+
+          <!-- Chart.js Price Trend Analytics Card -->
+          <div class="glass-card rounded-3xl p-6 sm:p-8 lg:p-10 shadow-xl mt-8">
+            <div class="flex items-center justify-between mb-6">
+              <div>
+                <h4 class="text-lg font-bold text-white flex items-center gap-2.5">
+                  <i class="fa-solid fa-chart-area text-amber-400"></i> Mandi price and planning references
+                </h4>
+                <p class="text-xs text-slate-400 mt-1">Official daily report where available, alongside bundled planning estimates</p>
+              </div>
+              <span class="text-xs px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 font-semibold font-mono">
+                Interactive Analytics
+              </span>
+            </div>
+            <div class="relative h-72 w-full">
+              <canvas id="marketTrendChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Where to Sell Table -->
+          <div class="glass-card rounded-3xl p-6 sm:p-8 lg:p-10 shadow-xl mt-8">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+              <div>
+                <h4 class="text-lg font-bold text-white flex items-center gap-2.5">
+                  <i class="fa-solid fa-store text-emerald-400"></i> Multi-Channel Buyer Payout Comparison
+                </h4>
+                <p class="text-xs text-slate-400 mt-1">Estimated cash flow for ${data.logistics_and_harvest.volume_quintals} quintals (freight estimate: ₹${data.logistics_and_harvest.estimated_freight_cost_inr} over ${data.logistics_and_harvest.distance_km} km)</p>
+                <p class="text-xs text-amber-300 mt-2">Only the selected-state APMC modal quote is from the official daily feed when available. Other buyer rates, deductions, MSP references, and the planning suggestion are bundled estimates; confirm current offers with the buyer.</p>
+              </div>
+              <span class="self-start sm:self-auto text-xs px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-semibold font-mono">
+                Optimal Channel: ${data.best_selling_channel}
+              </span>
+            </div>
+
+            <div class="overflow-x-auto rounded-2xl border border-slate-800">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="border-b border-slate-800 text-[11px] uppercase font-bold text-slate-400 bg-slate-950/80 font-mono">
+                    <th class="py-3 px-5">Selling Channel</th>
+                    <th class="py-3 px-5">Target Buyer / Customer</th>
+                    <th class="py-3 px-5">Market Location Hub</th>
+                    <th class="py-3 px-5">Offered Rate</th>
+                    <th class="py-3 px-5">Commission</th>
+                    <th class="py-3 px-5">Payment Cycle</th>
+                    <th class="py-3 px-5">Estimated Net Take-Home</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${channelsRows}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+
+        // Render Chart.js
+        setTimeout(() => {
+          const ctx = document.getElementById('marketTrendChart').getContext('2d');
+          if (window.myMarketChart) {
+            window.myMarketChart.destroy();
+          }
+          window.myMarketChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: [p.current_price_is_live ? 'Latest mandi report' : 'Current benchmark', 'Planning reference', 'MSP reference', '7-day estimate'],
+              datasets: [{
+                label: data.crop + ' Price (₹ / Quintal)',
+                data: [p.current_year_modal_2026, p.previous_year_modal_2025, p.government_msp, p.projected_7d_rate],
+                backgroundColor: [
+                  'rgba(16, 185, 129, 0.6)',
+                  'rgba(100, 116, 139, 0.4)',
+                  'rgba(59, 130, 246, 0.6)',
+                  'rgba(245, 158, 11, 0.6)'
+                ],
+                borderColor: [
+                  'rgb(16, 185, 129)',
+                  'rgb(100, 116, 139)',
+                  'rgb(59, 130, 246)',
+                  'rgb(245, 158, 11)'
+                ],
+                borderWidth: 2,
+                borderRadius: 12
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { labels: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans', size: 12 } } }
+              },
+              scales: {
+                x: { ticks: { color: '#94a3b8', font: { family: 'JetBrains Mono' } }, grid: { color: 'rgba(51, 65, 85, 0.2)' } },
+                y: { ticks: { color: '#94a3b8', font: { family: 'JetBrains Mono' } }, grid: { color: 'rgba(51, 65, 85, 0.2)' } }
+              }
+            }
+          });
+        }, 100);
+
+      } catch (err) {
+        document.getElementById('marketResultContainer').innerHTML = `
+          <div class="p-4 bg-rose-500/10 border border-rose-500/30 rounded-2xl text-xs text-rose-300">
+            Backend connection error. Make sure FastAPI server is running on port 8000.
+          </div>
+        `;
+      } finally {
+        btn.innerHTML = originalHTML;
+        btn.disabled = false;
+      }
+    }
+
+    function escapeHTML(value) {
+      return String(value).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+    }
+
+    async function loadLiveMandiFeed() {
+      const state = document.getElementById('market_state_select').value;
+      const district = document.getElementById('market_district_filter').value.trim();
+      const status = document.getElementById('liveMandiStatus');
+      const container = document.getElementById('liveMandiPills');
+      container.innerHTML = '';
+      status.textContent = `Loading AGMARKNET daily reports for ${district ? `${district}, ` : ''}${state}…`;
+      try {
+        const params = new URLSearchParams({state});
+        if (district) params.set('district', district);
+        const res = await fetch(`${API_BASE}/live-mandi-feed?${params.toString()}`);
+        const data = await res.json();
+        if (!res.ok) throw new Error('Could not load the market report.');
+        if (data.records && data.records.length) {
+          status.textContent = `${data.district || district ? `${data.district || district}, ` : ''}${data.state} · AGMARKNET daily wholesale modal prices · Source: data.gov.in`;
+          container.innerHTML = data.records.slice(0, 6).map(r => `
+            <span title="${escapeHTML(r.market || '')}${r.district ? `, ${escapeHTML(r.district)}` : ''} · Report ${escapeHTML(r.arrival_date || 'date unavailable')}" class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300">
+              ${escapeHTML(r.commodity)}: <strong class="text-emerald-400">₹${r.modal_price}</strong><span class="text-slate-500"> · ${escapeHTML(r.arrival_date || 'date unavailable')}</span>
+            </span>
+          `).join('');
+        } else {
+          status.textContent = data.message || `No official market prices were returned for ${state}.`;
+          container.innerHTML = data.status === 'missing_api_key'
+            ? '<a href="https://www.data.gov.in/help" target="_blank" rel="noopener noreferrer" class="text-amber-300 underline underline-offset-2">Set up the data.gov.in API key</a>'
+            : '';
+        }
+      } catch (e) {
+        status.textContent = e.message || 'The official daily market feed is unavailable right now.';
+      }
+    }
+    document.getElementById('market_state_select').addEventListener('change', loadLiveMandiFeed);
+    document.getElementById('market_district_filter').addEventListener('change', loadLiveMandiFeed);
+    loadLiveMandiFeed();
+  </script>
+</body>
+</html>

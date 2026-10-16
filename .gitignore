@@ -1,0 +1,13 @@
+# Secrets and local environment
+.env
+.env.*
+!.env.example
+
+# Python environments and cache
+venv/
+backend/venv/
+__pycache__/
+*.py[cod]
+
+# Local database
+backend/smart_agriguide.db
